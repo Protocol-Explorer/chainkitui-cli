@@ -32,5 +32,5 @@ We welcome contributions to ChainKitUI! Feel free to open issues for suggestions
 
 ## License
 
-ChainKitUI is released under the MIT license.
+ChainKitUI is released under the [MIT license](/LICENSE).
 
