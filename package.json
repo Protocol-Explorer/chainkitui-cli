@@ -1,0 +1,32 @@
+{
+  "name": "chainkitui",
+  "version": "0.0.2",
+  "main": "dist/cli/index.js",
+  "author": "Rahat",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "chainkitui": "dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc && node copyComponents.js",
+    "dev": "tsc && node copyComponents.js && node ./dist/cli/index.js"
+  },
+  "devDependencies": {
+    "@types/figlet": "^1.5.8",
+    "@types/inquirer": "^9.0.7",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "ethers": "^5.7.2",
+    "figlet": "^1.7.0",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^9.2.12",
+    "ora": "^8.0.1",
+    "react": "^18.2.0"
+  }
+}
