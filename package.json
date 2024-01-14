@@ -10,13 +10,28 @@
   },
   "scripts": {
     "build": "tsc && node copyComponents.js",
-    "dev": "tsc && node copyComponents.js && node ./dist/cli/index.js"
+    "dev": "tsc && node copyComponents.js && node ./dist/cli/index.js",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "devDependencies": {
+    "@storybook/addon-essentials": "^7.6.8",
+    "@storybook/addon-interactions": "^7.6.8",
+    "@storybook/addon-links": "^7.6.8",
+    "@storybook/addon-onboarding": "^1.0.10",
+    "@storybook/blocks": "^7.6.8",
+    "@storybook/react": "^7.6.8",
+    "@storybook/react-vite": "^7.6.8",
+    "@storybook/test": "^7.6.8",
     "@types/figlet": "^1.5.8",
     "@types/inquirer": "^9.0.7",
     "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.33",
+    "react-dom": "^18.2.0",
+    "storybook": "^7.6.8",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
   },
   "dependencies": {
