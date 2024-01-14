@@ -10,5 +10,5 @@
     "moduleResolution": "node",
     "jsx": "react-jsx",
   },
-  "exclude": ["**/*.tsx"]
+  "exclude": ["**/*.tsx", "node_modules"]
 }

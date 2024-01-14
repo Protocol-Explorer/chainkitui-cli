@@ -5,11 +5,13 @@ import {
   type UseWriteContractParameters,
 } from "wagmi";
 import { WriteContractVariables } from "wagmi/query";
+import { Slot } from "@radix-ui/react-slot";
 
 import type { Config } from "@wagmi/core";
 import { Abi } from "viem";
 
 import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "../lib/utils";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -57,8 +59,7 @@ interface ButtonProps
 
 // interface defined to accept the arguments of useWriteContract and `writeContract` function as a prop
 interface TxnButtonProps<config extends Config = Config, context = unknown>
-  extends UseWriteContractParameters<config, context>,
-    ButtonProps {
+  extends ButtonProps {
   writeContractArgs: WriteContractVariables<
     Abi,
     string,
@@ -66,6 +67,7 @@ interface TxnButtonProps<config extends Config = Config, context = unknown>
     config,
     config["chains"][number]["id"]
   >;
+  useWriteContractArgs?: UseWriteContractParameters<config, context>;
 }
 
 // Have frowardedRef so that the parent component can access the ref of the button
@@ -76,22 +78,25 @@ const TxnButton = React.forwardRef<HTMLButtonElement, TxnButtonProps>(
       variant,
       size,
       asChild = false,
-      ...useWriteContractArgs
+      className,
+      useWriteContractArgs,
+      ...props
     },
     ref
   ) => {
     const { writeContract, ...returnData } = useWriteContract({
       ...useWriteContractArgs,
     });
-    const Comp = asChild ? React.Fragment : "button";
+    const Comp = asChild ? Slot : "button";
 
     return (
       <TxnButtonContext.Provider value={returnData}>
         <Comp
-          className={buttonVariants({ variant, size })}
+          className={cn(buttonVariants({ variant, size, className }))}
           disabled={!writeContract || returnData.isPending}
           onClick={() => writeContract?.(writeContractArgs)}
           ref={asChild ? undefined : ref}
+          {...props}
         >
           {returnData.isPending ? "Loading..." : "Transact"}
         </Comp>

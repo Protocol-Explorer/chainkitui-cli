@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/react";
-import '../src/tailwind.css'; // replace with the name of your tailwind css file
+import '../main.css'; // replace with the name of your tailwind css file
 
 const preview: Preview = {
   parameters: {

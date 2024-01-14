@@ -20,15 +20,15 @@ const Comp = () => {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <TxnButton
-          config={config}
+          useWriteContractArgs={{ config }}
           // functionName="transfer"
           writeContractArgs={{
             abi: erc20Abi,
             address: "0x6b175474e89094c44da98b954eedeac495271d0f",
             functionName: "transfer",
           }}
-          variant="secondary"
-          size="lg"
+          // variant="secondary"
+          // size="lg"
         >
           Make Transaction
         </TxnButton>
