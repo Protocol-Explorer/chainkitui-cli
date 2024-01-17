@@ -19,7 +19,7 @@ const Comp = () => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <TxnButton
+        <TxnButton 
           useWriteContractArgs={{ config }}
           // functionName="transfer"
           writeContractArgs={{
@@ -27,7 +27,7 @@ const Comp = () => {
             address: "0x6b175474e89094c44da98b954eedeac495271d0f",
             functionName: "transfer",
           }}
-          // variant="secondary"
+          variant="secondary"
           // size="lg"
         >
           Make Transaction
