@@ -35,10 +35,8 @@ interface TxnButtonProps<config extends Config = Config, context = unknown>
 // Have frowardedRef so that the parent component can access the ref of the button
 const TxnButton: React.FC<TxnButtonProps> = ({
   writeContractArgs,
-  variant,
-  size,
-  className,
   useWriteContractArgs,
+  className,
   ...props
 }) => {
   const { writeContract, ...returnData } = useWriteContract({
