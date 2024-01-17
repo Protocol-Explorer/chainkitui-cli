@@ -11,7 +11,7 @@ import { Abi } from "viem";
 
 import { Button, ButtonProps } from "../shadcnComponents/ui/button.tsx";
 
-// ContextType
+// context type
 type ContextType<config extends Config = Config, context = unknown> = Omit<
   UseWriteContractReturnType<config, context>,
   "writeContract" | "writeContractAsync"
@@ -21,7 +21,7 @@ const TxnButtonContext = React.createContext<ContextType | null>(null);
 
 // interface defined to accept the arguments of useWriteContract and `writeContract` function as a prop
 interface TxnButtonProps<config extends Config = Config, context = unknown>
-  extends ButtonProps {
+  extends Omit<ButtonProps, "children"> {
   writeContractArgs: WriteContractVariables<
     Abi,
     string,
@@ -30,18 +30,27 @@ interface TxnButtonProps<config extends Config = Config, context = unknown>
     config["chains"][number]["id"]
   >;
   useWriteContractArgs?: UseWriteContractParameters<config, context>;
+  children?: React.ReactNode | ((state: ContextType) => React.ReactNode);
 }
 
-// Have frowardedRef so that the parent component can access the ref of the button
+// TxnButton component
 const TxnButton: React.FC<TxnButtonProps> = ({
   writeContractArgs,
   useWriteContractArgs,
   className,
-  ...props
+  children,
+  ...buttonProps
 }) => {
-  const { writeContract, ...returnData } = useWriteContract({
-    ...useWriteContractArgs,
-  });
+  const { writeContract, ...returnData } =
+    useWriteContract(useWriteContractArgs);
+
+  const buttonText = returnData.isPending
+    ? "Loading..."
+    : returnData.isSuccess
+    ? "Success"
+    : returnData.isError
+    ? "Error"
+    : "Transact";
 
   return (
     <TxnButtonContext.Provider value={returnData}>
@@ -49,31 +58,15 @@ const TxnButton: React.FC<TxnButtonProps> = ({
         className={className}
         disabled={!writeContract || returnData.isPending}
         onClick={() => writeContract?.(writeContractArgs)}
-        {...props}
+        {...buttonProps}
       >
-        {returnData.isPending ? "Loading..." : "Transact"}
+        {buttonText}
       </Button>
+      {typeof children === "function" ? children(returnData) : children}
     </TxnButtonContext.Provider>
   );
 };
 
-// States is a compound component which will allow the user to access all the states from useWriteContract
-const States: React.FC<{
-  children: (state: ContextType) => React.ReactNode;
-}> = ({ children }) => {
-  const returnData = React.useContext(TxnButtonContext);
-  if (!returnData) return null;
-  {
-    /* user can access all the states from useWriteContract */
-  }
-  return typeof children === "function"
-    ? children({ ...returnData })
-    : children;
-};
-
 TxnButton.displayName = "TxnButton";
-
-// User will be able to access all the variables of useWriteContract from TxnButton.States, thereby making it a compound component
-Object.assign(TxnButton, { States });
 
 export { TxnButton };
