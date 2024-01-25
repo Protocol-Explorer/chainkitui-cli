@@ -55,7 +55,7 @@ const TxnButton: React.FC<TxnButtonProps> = ({
     if (returnData.isError) {
       onTxnError?.(returnData);
     }
-  }, [returnData.isSuccess]);
+  }, [returnData.isError]);
 
   const buttonText = returnData.isPending
     ? "Loading..."
