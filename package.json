@@ -53,6 +53,7 @@
     "tailwind": "^4.0.0",
     "tailwind-merge": "^2.2.0",
     "viem": "2.x",
-    "wagmi": "^2.0.3"
+    "wagmi": "^2.0.3",
+    "@wagmi/core": "^2.2.1"
   }
 }

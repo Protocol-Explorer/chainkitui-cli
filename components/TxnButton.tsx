@@ -1,3 +1,4 @@
+// External libraries
 import * as React from "react";
 import {
   UseWriteContractReturnType,
@@ -6,20 +7,17 @@ import {
 } from "wagmi";
 import { WriteContractVariables } from "wagmi/query";
 
+// Internal modules
 import type { Config } from "@wagmi/core";
 import { Abi } from "viem";
-
 import { Button, ButtonProps } from "../shadcnComponents/ui/button.tsx";
 
-// context type
+// Type Definitions
 type ContextType<config extends Config = Config, context = unknown> = Omit<
   UseWriteContractReturnType<config, context>,
   "writeContract" | "writeContractAsync"
 >;
 
-const TxnButtonContext = React.createContext<ContextType | null>(null);
-
-// interface defined to accept the arguments of useWriteContract and `writeContract` function as a prop
 interface TxnButtonProps<config extends Config = Config, context = unknown>
   extends Omit<ButtonProps, "children"> {
   writeContractArgs: WriteContractVariables<
@@ -30,19 +28,34 @@ interface TxnButtonProps<config extends Config = Config, context = unknown>
     config["chains"][number]["id"]
   >;
   useWriteContractArgs?: UseWriteContractParameters<config, context>;
+  onTxnSuccess?: (data: ContextType) => void;
+  onTxnError?: (data: ContextType) => void;
   children?: React.ReactNode | ((state: ContextType) => React.ReactNode);
 }
 
-// TxnButton component
+// Components
 const TxnButton: React.FC<TxnButtonProps> = ({
   writeContractArgs,
   useWriteContractArgs,
-  className,
+  onTxnSuccess,
+  onTxnError,
   children,
   ...buttonProps
 }) => {
   const { writeContract, ...returnData } =
     useWriteContract(useWriteContractArgs);
+
+  React.useEffect(() => {
+    if (returnData.isSuccess) {
+      onTxnSuccess?.(returnData);
+    }
+  }, [returnData.isSuccess]);
+
+  React.useEffect(() => {
+    if (returnData.isError) {
+      onTxnError?.(returnData);
+    }
+  }, [returnData.isSuccess]);
 
   const buttonText = returnData.isPending
     ? "Loading..."
@@ -53,20 +66,21 @@ const TxnButton: React.FC<TxnButtonProps> = ({
     : "Transact";
 
   return (
-    <TxnButtonContext.Provider value={returnData}>
-      <Button
-        className={className}
-        disabled={!writeContract || returnData.isPending}
-        onClick={() => writeContract?.(writeContractArgs)}
-        {...buttonProps}
-      >
-        {buttonText}
-      </Button>
-      {typeof children === "function" ? children(returnData) : children}
-    </TxnButtonContext.Provider>
+    <Button
+      disabled={!writeContract || returnData.isPending}
+      onClick={() => writeContract?.(writeContractArgs)}
+      {...buttonProps}
+    >
+      {children
+        ? typeof children === "function"
+          ? children(returnData)
+          : children
+        : buttonText}
+    </Button>
   );
 };
 
 TxnButton.displayName = "TxnButton";
 
+// Exports
 export { TxnButton };
