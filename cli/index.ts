@@ -20,7 +20,7 @@ console.log(chalk.green(figlet.textSync('ChainKitUI', { horizontalLayout: 'full'
 const program = new Command();
 
 program
-  .version('0.0.2')
+  .version('0.0.3')
   .description('CLI tool to copy React components for Web3');
 
 async function mainMenu() {
