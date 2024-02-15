@@ -10,23 +10,53 @@
   },
   "scripts": {
     "build": "tsc && node copyComponents.js",
-    "dev": "tsc && node copyComponents.js && node ./dist/cli/index.js"
+    "dev": "tsc && node copyComponents.js && node ./dist/cli/index.js",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
+    "resolutions": {
+      "@types/node": "20.11.6"
+    },
   "devDependencies": {
+    "@storybook/addon-essentials": "^7.6.8",
+    "@storybook/addon-interactions": "^7.6.8",
+    "@storybook/addon-links": "^7.6.8",
+    "@storybook/addon-onboarding": "^1.0.10",
+    "@storybook/addon-styling-webpack": "^0.0.6",
+    "@storybook/blocks": "^7.6.8",
+    "@storybook/react": "^7.6.8",
+    "@storybook/react-vite": "^7.6.8",
+    "@storybook/test": "^7.6.8",
     "@types/figlet": "^1.5.8",
     "@types/inquirer": "^9.0.7",
     "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.33",
+    "react-dom": "^18.2.0",
+    "storybook": "^7.6.8",
+    "tailwindcss": "^3.4.1",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
+    "@tanstack/react-query": "^5.17.9",
     "chalk": "^5.3.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
     "commander": "^11.1.0",
     "ethers": "^5.7.2",
     "figlet": "^1.7.0",
     "fs-extra": "^11.2.0",
     "inquirer": "^9.2.12",
+    "lucide-react": "^0.311.0",
     "ora": "^8.0.1",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "tailwind": "^4.0.0",
+    "tailwind-merge": "^2.2.0",
+    "viem": "2.x",
+    "wagmi": "^2.0.3",
+    "@wagmi/core": "^2.2.1"
   }
 }
