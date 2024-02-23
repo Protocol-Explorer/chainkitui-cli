@@ -32,7 +32,7 @@ async function mainMenu() {
       name: "action",
       message: "What would you like to do?",
       choices: [
-        "Build new project from templates",
+        // "Build new project from templates",
         "Add components to existing projects",
         "Exit",
       ],
@@ -40,9 +40,9 @@ async function mainMenu() {
   ]);
 
   switch (answers.action) {
-    case "Build new project from templates":
-      console.log("Coming soon...");
-      break;
+    // case "Build new project from templates":
+    //   console.log("Coming soon...");
+    //   break;
     case "Add components to existing projects":
       await addComponentsMenu();
       break;
