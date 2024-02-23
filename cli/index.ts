@@ -1,4 +1,4 @@
-// !/usr/bin/env node
+#!/usr/bin/env node
 
 import * as path from 'path';
 import { fileURLToPath } from 'url';
@@ -51,53 +51,76 @@ async function mainMenu() {
 }
 
 async function addComponentsMenu() {
-  const componentsPath = path.join(__dirname, '..', '..', 'components');
+  const componentsDistPath = path.join(__dirname, '..', 'components');
 
   try {
-    const components = fs.readdirSync(componentsPath).filter(file => file.endsWith('.tsx'));
+    const projectRoot = process.cwd();
+    const componentJsonPath = path.join(projectRoot, 'components.json');
+    if (!fs.existsSync(componentJsonPath)) {
+      logger.error('component.json file not found. Ensure it exists in the root of your project.');
+      return;
+    }
 
+    let componentJson = JSON.parse(fs.readFileSync(componentJsonPath, 'utf-8'));
+    let componentsDirPath;
+    let web3ComponentsDirPath: any;
+
+    // Check if the components directory is specified; use it to define web3Components path
+    if (componentJson.aliases && componentJson.aliases.components) {
+      componentsDirPath = path.join(projectRoot, componentJson.aliases.components.replace('@/', ''));
+      web3ComponentsDirPath = path.join(componentsDirPath, 'web3Components');
+    } else {
+      logger.error('Components directory alias not found in component.json.');
+      return;
+    }
+
+    // Ensure the web3Components directory exists
+    if (!fs.existsSync(web3ComponentsDirPath)) {
+      fs.mkdirSync(web3ComponentsDirPath, { recursive: true });
+      logger.info(`Created web3Components directory at ${web3ComponentsDirPath}.`);
+      
+      // Update component.json with web3Components alias if not already specified
+      if (!componentJson.aliases.web3Components) {
+        componentJson.aliases.web3Components = "@/components/web3Components";
+        fs.writeFileSync(componentJsonPath, JSON.stringify(componentJson, null, 2));
+        logger.info('web3Components directory added to component.json.');
+      }
+    }
+
+    const components = fs.readdirSync(componentsDistPath).filter(file => file.endsWith('.tsx'));
     if (components.length === 0) {
-      logger.warn("No components found in the components directory.");
+      logger.warn("No components found in the distribution's components directory.");
       return;
-    }
-
-    const userSrcPath = path.join(process.cwd(), 'src');
-    if (!fs.existsSync(userSrcPath)) {
-      logger.error('src directory not found. A src directory is required.');
-      return;
-    }
-
-    const userComponentsPath = path.join(userSrcPath, 'components');
-    if (!fs.existsSync(userComponentsPath)) {
-      fs.mkdirSync(userComponentsPath);
-      logger.info('Created components directory in src.');
-    }
-
-    const userWeb3UiPath = path.join(userComponentsPath, 'web3ui');
-    if (!fs.existsSync(userWeb3UiPath)) {
-      fs.mkdirSync(userWeb3UiPath);
-      logger.info('Created web3ui directory in components.');
     }
 
     const answers = await inquirer.prompt([
       {
-        type: 'list',
-        name: 'component',
-        message: 'Which component would you like to add?',
-        choices: components,
-      },
+        type: 'checkbox',
+        name: 'selectedComponents',
+        message: 'Which component(s) would you like to add?',
+        choices: components
+      }
     ]);
 
-    const componentPath = path.join(componentsPath, answers.component);
-    const destinationPath = path.join(userWeb3UiPath, answers.component);
+    if (answers.selectedComponents.length === 0) {
+      logger.warn("No components selected. Exiting.");
+      return;
+    }
 
-    fs.copyFileSync(componentPath, destinationPath);
-    logger.success(`Component ${answers.component} added to your project.`);
+    answers.selectedComponents.forEach((componentName: string) => {
+      const componentToCopyPath = path.join(componentsDistPath, componentName);
+      const destinationPath = path.join(web3ComponentsDirPath, componentName);
+
+      fs.copyFileSync(componentToCopyPath, destinationPath);
+      logger.success(`Component ${componentName} successfully added to your project under web3Components.`);
+    });
   } catch (error) {
-    //@ts-ignore
-    logger.error("Error processing components:", error.message);
+    logger.error(`Error processing components: ${error}`);
   }
 }
+
+
+
 
 function ensureEthersDependency() {
   const endUserPackageJsonPath = path.join(process.cwd(), 'package.json');
